@@ -1,0 +1,95 @@
+<!DOCTYPE html> 
+<html>
+<head>
+<title>Haptics Test</title>
+<link rel="stylesheet" type="text/css" href="/css/options.css">
+<script type="text/javascript">
+var bkg = chrome.extension.getBackgroundPage();
+
+/**
+* Saves options to localStorage.
+*/
+function saveOptions() {
+  // Save settings.
+  bkg.settings.debug = document.getElementById('debug').checked;
+  bkg.settings.opt_out = document.getElementById('opt_out').checked;
+  
+  // Update status to let user know options were saved.
+  var info = document.getElementById('info-message');
+  info.style.display = 'inline';
+  info.style.opacity = 1;
+  setTimeout(function() {
+    info.style.opacity = 0.0;
+  }, 1000);
+}
+
+/**
+* Restore all options.
+*/
+function restoreOptions() {
+  // Restore settings.
+  document.getElementById('version').innerHTML = ' (v' + bkg.settings.version + ')';
+  document.getElementById('debug').checked = bkg.settings.debug;
+  document.getElementById('opt_out').checked = bkg.settings.opt_out;
+}
+
+</script>
+</head>
+
+<body onload="restoreOptions()"> 
+  <form onsubmit="return false;">
+  <div id="body-container">
+    <div id="header">
+      <h1>Haptics Test <em id="version"></em></h1>
+    </div>
+    <p>
+      Make sure you save the settings after your done editing!
+      <a
+       href="#">
+       Visit extension page
+      </a>,
+      <a
+       href="http://groups.google.com/group/mohamedmansour-extensions">
+       File bugs and suggestions
+      </a>
+    </p>
+    <div class="extension-template">
+      <div class="extension-header">General</div>
+      <div class="extension-options">
+        <dl>
+          <dt>Opt-Out of future notifications:</dt>
+          <dd>
+            <label for="opt_out"><input type="checkbox" id="opt_out" /></label>
+          </dd>
+        </dl>
+      </div>
+    </div>
+    <div class="extension-template">
+      <div class="extension-header">Debugging</div>
+      <div class="extension-options">
+        <p>To report a bug to the developer, please enable the debugger below,
+           and it will post the debug messages to the "background.html"
+           inspector located in chrome://extensions when you click on it on the
+           console tab. Once your done reporting, you can uncheck it.</p>
+        <dl>
+          <dt>Show on console:</dt>
+          <dd>
+            <label for="debug"><input type="checkbox" id="debug" /></label>
+          </dd>
+        </dl>
+      </div>
+    </div>
+    <div id="extension-footer">
+      <span id="info-message">Options saved!</span>
+      <button onclick="saveOptions();">Save</button>
+      <button onclick="window.close();">Close</button>
+    </div>
+    <div id="credits">
+      Extension developed by <a href="http://www.mohamedmansour.com">Mohamed Mansour</a>, 
+      Source Code available in <a href="http://github.com/mohamedmansour/">GitHub</a><br/>
+      Follow me on Twitter <a href="http://twitter.com/mohamedmansour">@mohamedmansour</a>
+    </div>
+  </div>
+  </form>
+</body>
+</html>

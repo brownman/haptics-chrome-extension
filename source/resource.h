@@ -1,6 +1,6 @@
 //{{NO_DEPENDENCIES}}
 // Microsoft Visual C++ generated include file.
-// Used by setwallpaper_plugin.rc
+// Used by haptics_plugin.rc
 //
 
 // Next default values for new objects

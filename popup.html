@@ -1,0 +1,19 @@
+<!DOCTYPE html> 
+<html>
+<script>
+var bkg = chrome.extension.getBackgroundPage();
+function startDevice() {
+  bkg.console.debug('Starting');
+  bkg.plugin.startDevice();
+}
+
+function stopDevice() {
+  bkg.console.debug('Stoping');
+  bkg.plugin.stopDevice();
+}
+</script>
+<body> 
+  <button onclick="startDevice()">Start Device</button>
+  <button onclick="stopDevice()">Stop Device</button>
+</body>
+</html>
