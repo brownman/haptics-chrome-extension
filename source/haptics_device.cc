@@ -23,8 +23,8 @@ void HapticsDevice::StartDevice() {
   HDLError err = HDL_NO_ERROR;
 
   // Gets the default device handle from the hdal.ini file from the driver.
-  HDLDeviceHandle handle = hdlInitNamedDevice((const char*)0);
-  if (handle == HDL_INVALID_HANDLE) {
+  device_handle_ = hdlInitNamedDevice((const char*)0);
+  if (device_handle_ == HDL_INVALID_HANDLE) {
     std::cout << "Device Failure: Could not open device.";
   }
   CheckError("hdlInitNamedDevice");
@@ -43,7 +43,7 @@ void HapticsDevice::StartDevice() {
 
   // Make the device current. All subsequent calls will
   // be directed towards the current device.
-  hdlMakeCurrent(handle);
+  hdlMakeCurrent(device_handle_);
   CheckError("hdlMakeCurrent");
 
   // Get the extents of the device workspace.
