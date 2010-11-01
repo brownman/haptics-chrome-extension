@@ -41,6 +41,30 @@ NPObject* HapticsService::GetScriptableObject() {
   return scriptable_object_;
 }
 
+bool HapticsService::SendForce(NPObject* force_object) {
+  SendConsole("SetForce::BEGIN");
+  NPVariant length_variant;
+  npfuncs_->getproperty(npp_,
+                        force_object,
+                        npfuncs_->getstringidentifier("length"),
+                        &length_variant);
+  int length = NPVARIANT_TO_INT32(length_variant);
+  if (length != 3)
+    return false;
+
+  double force[3];
+  for (int i = 0; i < 3; i++) {
+    NPVariant val;
+    npfuncs_->getproperty(npp_,
+                          force_object,
+                          npfuncs_->getintidentifier(i),
+                          &val);
+    force[i] = NPVARIANT_TO_DOUBLE(val);
+  }
+  device_->SendForce(force);
+  return true;
+}
+
 bool HapticsService::StartDevice() {
   SendConsole("StartDevice::BEGIN");
   device_->StartDevice();

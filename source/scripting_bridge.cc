@@ -6,11 +6,14 @@
 
 #include "haptics_service.h"
 
+#include "npapi.h"
+#include "npruntime.h"
 namespace haptics {
 
+NPIdentifier ScriptingBridge::id_debug;
 NPIdentifier ScriptingBridge::id_start_device;
 NPIdentifier ScriptingBridge::id_stop_device;
-NPIdentifier ScriptingBridge::id_debug;
+NPIdentifier ScriptingBridge::id_send_force;
 
 // Method table for use by HasMethod and Invoke.
 std::map<NPIdentifier, ScriptingBridge::MethodSelector>*
@@ -36,9 +39,10 @@ ScriptingBridge::~ScriptingBridge() {
 
 // Sets up method_table and property_table.
 bool ScriptingBridge::InitializeIdentifiers(NPNetscapeFuncs* npfuncs) {
+  id_debug = npfuncs->getstringidentifier("debug");
   id_start_device = npfuncs->getstringidentifier("startDevice");
   id_stop_device = npfuncs->getstringidentifier("stopDevice");
-  id_debug = npfuncs->getstringidentifier("debug");
+  id_send_force = npfuncs->getstringidentifier("sendForce");
 
   method_table =
       new(std::nothrow) std::map<NPIdentifier, MethodSelector>;
@@ -51,6 +55,9 @@ bool ScriptingBridge::InitializeIdentifiers(NPNetscapeFuncs* npfuncs) {
   method_table->insert(
       std::pair<NPIdentifier, MethodSelector>(
           id_stop_device, &ScriptingBridge::StopDevice));
+  method_table->insert(
+      std::pair<NPIdentifier, MethodSelector>(
+         id_send_force, &ScriptingBridge::SendForce));
 
   get_property_table =
       new(std::nothrow) std::map<NPIdentifier, GetPropertySelector>;
@@ -88,6 +95,24 @@ bool ScriptingBridge::StopDevice(const NPVariant* args,
   HapticsService* haptics_service = static_cast<HapticsService*>(npp_->pdata);
   if (haptics_service)
     return haptics_service->StopDevice();
+  return false;
+}
+
+bool ScriptingBridge::SendForce(const NPVariant* args,
+                                uint32_t arg_count,
+                                NPVariant* result) {
+  // Fail silently if signature doesn't have 1 parameter.
+  if (arg_count != 1)
+    return false;
+
+  const NPVariant force_argument = args[0];
+  if (force_argument.type != NPVariantType_Object)
+    return false;
+
+  NPObject* force_object = NPVARIANT_TO_OBJECT(force_argument);
+  HapticsService* haptics_service = static_cast<HapticsService*>(npp_->pdata);
+  if (haptics_service)
+    return haptics_service->SendForce(force_object);
   return false;
 }
 

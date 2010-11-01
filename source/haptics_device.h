@@ -17,19 +17,22 @@ class HapticsDevice {
   explicit HapticsDevice();
   ~HapticsDevice();
 
+  void SendForce(double force[3]);
   void StartDevice();
   void StopDevice();
 
   void SynchronizeClient();
 
-  // Is the button down.
+  // Is the main button pressed down.
   bool IsButtonDown();
   
   // Get position of the device.
   void GetPosition(double pos[3]);
 private:
-  void CheckError(const char* message);
+  void FirePositionChange() const;
 
+  void CheckError(const char* message) const;
+  
   HAPTIC_CALLBACK(HapticsDevice, HDLServoOpExitCode, OnContact);
   HAPTIC_CALLBACK(HapticsDevice, HDLServoOpExitCode, OnState);
 

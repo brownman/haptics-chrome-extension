@@ -57,6 +57,9 @@ class ScriptingBridge : public NPObject {
   // Stops the haptic device.
   bool StopDevice(const NPVariant* args, uint32_t arg_count,
                   NPVariant* result);
+  // Sends force to the haptic device.
+  bool SendForce(const NPVariant* args, uint32_t arg_count,
+                 NPVariant* result);
 
   // Accessor/mutator for the debug property.
   bool GetDebug(NPVariant* value);
@@ -65,9 +68,10 @@ class ScriptingBridge : public NPObject {
  private:
   NPP npp_;
 
+  static NPIdentifier id_debug;
   static NPIdentifier id_start_device;
   static NPIdentifier id_stop_device;
-  static NPIdentifier id_debug;
+  static NPIdentifier id_send_force;
 
   static std::map<NPIdentifier, MethodSelector>* method_table;
   static std::map<NPIdentifier, GetPropertySelector>* get_property_table;

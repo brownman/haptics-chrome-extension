@@ -19,6 +19,7 @@ class HapticsService {
 
   NPObject* GetScriptableObject();
 
+  bool SendForce(NPObject* force_object);
   bool StartDevice();
   bool StopDevice();
 

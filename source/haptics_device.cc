@@ -11,12 +11,19 @@
 namespace haptics {
 
 HapticsDevice::HapticsDevice()
-    : device_handle_(HDL_INVALID_HANDLE),
-      servo_callback_(HDL_INVALID_HANDLE){
+    : button_servo_(false),
+      device_handle_(HDL_INVALID_HANDLE),
+      servo_callback_(HDL_INVALID_HANDLE) {
 }
 
 HapticsDevice::~HapticsDevice() {
   StopDevice();
+}
+
+void HapticsDevice::SendForce(double force[3]) {
+  force_servo_[0] = force[0];
+  force_servo_[1] = force[1];
+  force_servo_[2] = force[2];
 }
 
 void HapticsDevice::StartDevice() {
@@ -95,27 +102,29 @@ void HapticsDevice::SynchronizeClient() {
   hdlCreateServoOp(OnStateThunk, this, true);
 }
 
-void HapticsDevice::CheckError(const char* message) {
+bool HapticsDevice::IsButtonDown() {
+    return button_;
+}
+
+void HapticsDevice::GetPosition(double pos[3]) {
+    pos[0] = position_[0];
+    pos[1] = position_[1];
+    pos[2] = position_[2];
+}
+
+void HapticsDevice::FirePositionChange() const {
+  std::cout << "Position: " << position_servo_[0] << " ";
+  std::cout << "Position: " << position_servo_[1] << " ";
+  std::cout << "Position: " << position_servo_[2] << " ";
+  std::cout << "Button: " << button_servo_ << std::endl;
+}
+
+void HapticsDevice::CheckError(const char* message) const {
   HDLError err = hdlGetError();
   if (err != HDL_NO_ERROR) {
     MessageBox(NULL, message, "HDAL ERROR", MB_OK);
     abort();
   }
-}
-
-
-// Interface function to get current position
-void HapticsDevice::GetPosition(double pos[3]) {
-    pos[0] = position_[0];
-    pos[1] = position_[1];
-    pos[2] = position_[2];
-
-}
-
-// Interface function to get button state.  Only one button is used
-// in this application.
-bool HapticsDevice::IsButtonDown() {
-    return button_;
 }
 
 HDLServoOpExitCode HapticsDevice::OnContact() {
@@ -124,10 +133,7 @@ HDLServoOpExitCode HapticsDevice::OnContact() {
   hdlToolButton(&(button_servo_));
 
   // Call JavaScript OnContact event listener. That does heavy calculations.
-  std::cout << "Position: " << position_servo_[0] << " ";
-  std::cout << "Position: " << position_servo_[1] << " ";
-  std::cout << "Position: " << position_servo_[2] << " ";
-  std::cout << "Button: " << button_servo_ << std::endl;
+  FirePositionChange();
 
   // Send forces to device
   hdlSetToolForce(force_servo_);
