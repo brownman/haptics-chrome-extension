@@ -8,6 +8,13 @@ How does it work?
 The NPAPI plugin interacts with the device and allows the webapp to interact with
 it.
 
+The API:
+
+    void startDevice();
+    void stopDevice();
+    void sendForce(double[3]);
+
+
 How to debug?
 -------------
 You can debug the extension's Native (NPAPI) instance by setting a property 
