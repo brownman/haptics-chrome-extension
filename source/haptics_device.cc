@@ -107,9 +107,9 @@ bool HapticsDevice::IsButtonDown() {
 }
 
 void HapticsDevice::GetPosition(double pos[3]) {
-    pos[0] = position_[0];
-    pos[1] = position_[1];
-    pos[2] = position_[2];
+    pos[0] = position_servo_[0];
+    pos[1] = position_servo_[1];
+    pos[2] = position_servo_[2];
 }
 
 void HapticsDevice::FirePositionChange() const {

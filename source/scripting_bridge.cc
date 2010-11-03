@@ -11,6 +11,7 @@
 namespace haptics {
 
 NPIdentifier ScriptingBridge::id_debug;
+NPIdentifier ScriptingBridge::id_position;
 NPIdentifier ScriptingBridge::id_start_device;
 NPIdentifier ScriptingBridge::id_stop_device;
 NPIdentifier ScriptingBridge::id_send_force;
@@ -40,6 +41,7 @@ ScriptingBridge::~ScriptingBridge() {
 // Sets up method_table and property_table.
 bool ScriptingBridge::InitializeIdentifiers(NPNetscapeFuncs* npfuncs) {
   id_debug = npfuncs->getstringidentifier("debug");
+  id_position = npfuncs->getstringidentifier("position");
   id_start_device = npfuncs->getstringidentifier("startDevice");
   id_stop_device = npfuncs->getstringidentifier("stopDevice");
   id_send_force = npfuncs->getstringidentifier("sendForce");
@@ -76,6 +78,10 @@ bool ScriptingBridge::InitializeIdentifiers(NPNetscapeFuncs* npfuncs) {
   set_property_table->insert(
       std::pair<NPIdentifier, SetPropertySelector>(
           id_debug, &ScriptingBridge::SetDebug));
+
+  get_property_table->insert(
+      std::pair<NPIdentifier, GetPropertySelector>(
+          id_position, &ScriptingBridge::GetPosition));
 
   return true;
 }
@@ -136,6 +142,16 @@ bool ScriptingBridge::SetDebug(const NPVariant* value) {
 
   haptics_service->set_debug(NPVARIANT_TO_BOOLEAN(*value));
   return true;
+}
+
+bool ScriptingBridge::GetPosition(NPVariant* value) {
+  HapticsService* haptics_service = static_cast<HapticsService*>(npp_->pdata);
+  if (haptics_service) {
+    haptics_service->GetPosition(value);
+    return true;
+  }
+  VOID_TO_NPVARIANT(*value);
+  return false;
 }
 
 // =============================================================================

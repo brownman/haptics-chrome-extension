@@ -65,10 +65,14 @@ class ScriptingBridge : public NPObject {
   bool GetDebug(NPVariant* value);
   bool SetDebug(const NPVariant* value);
 
+  // Position accessor.
+  bool GetPosition(NPVariant* value);
+
  private:
   NPP npp_;
 
   static NPIdentifier id_debug;
+  static NPIdentifier id_position;
   static NPIdentifier id_start_device;
   static NPIdentifier id_stop_device;
   static NPIdentifier id_send_force;

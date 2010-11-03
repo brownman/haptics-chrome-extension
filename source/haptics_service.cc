@@ -18,12 +18,19 @@ HapticsService::HapticsService(NPP npp, NPNetscapeFuncs* npfuncs)
       device_(NULL),
       debug_(false) {
   ScriptingBridge::InitializeIdentifiers(npfuncs);
+
+  NPObject* window = NULL;
+  npfuncs_->getvalue(npp_, NPNVWindowNPObject, &window_object_);
+
   device_ = new HapticsDevice();
 }
 
 HapticsService::~HapticsService() {
   if (scriptable_object_)
     npfuncs_->releaseobject(scriptable_object_);
+
+  if (window_object_)
+    npfuncs_->releaseobject(window_object_);
 
   if (device_) {
     delete device_;
@@ -82,14 +89,10 @@ void HapticsService::SendConsole(const char* message) {
   if (!debug_)
     return;
 
-  // Get window object.
-  NPObject* window = NULL;
-  npfuncs_->getvalue(npp_, NPNVWindowNPObject, &window);
-
   // Get console object.
   NPVariant consoleVar;
   NPIdentifier id = npfuncs_->getstringidentifier("console");
-  npfuncs_->getproperty(npp_, window, id, &consoleVar);
+  npfuncs_->getproperty(npp_, window_object_, id, &consoleVar);
   NPObject* console = NPVARIANT_TO_OBJECT(consoleVar);
 
   // Get the debug object.
@@ -106,9 +109,40 @@ void HapticsService::SendConsole(const char* message) {
 
   // Cleanup all allocated objects, otherwise, reference count and
   // memory leaks will happen.
-  npfuncs_->releaseobject(window);
   npfuncs_->releasevariantvalue(&consoleVar);
   npfuncs_->releasevariantvalue(&voidResponse);
+}
+
+
+void HapticsService::GetPosition(NPVariant* position_variant) {
+  SendConsole("SetForce::BEGIN");
+  // Initialize the return value.
+  NULL_TO_NPVARIANT(*position_variant);
+  NPVariant variant;
+  NPString npstr;
+  npstr.UTF8Characters = "new Array();";
+  npstr.UTF8Length = static_cast<uint32_t>(strlen(npstr.UTF8Characters));
+  if (!npfuncs_->evaluate(npp_, window_object_, &npstr, &variant) ||
+      !NPVARIANT_IS_OBJECT(variant)) {
+    return;
+  }
+
+  // Get the current device position.
+  double pos[3];
+  device_->GetPosition(pos);
+
+  // Set the properties for the position on the array.
+  NPObject* object = NPVARIANT_TO_OBJECT(variant);
+  if (object) {
+    NPVariant value;
+    DOUBLE_TO_NPVARIANT(pos[0], value);
+    npfuncs_->setproperty(npp_, object, npfuncs_->getintidentifier(0), &value);
+    DOUBLE_TO_NPVARIANT(pos[1], value);
+    npfuncs_->setproperty(npp_, object, npfuncs_->getintidentifier(1), &value);
+    DOUBLE_TO_NPVARIANT(pos[2], value);
+    npfuncs_->setproperty(npp_, object, npfuncs_->getintidentifier(2), &value);
+    OBJECT_TO_NPVARIANT(object, *position_variant);
+  }
 }
 
 }  // namespace desktop_service

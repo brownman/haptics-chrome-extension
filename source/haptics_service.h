@@ -25,6 +25,8 @@ class HapticsService {
 
   bool debug() const { return debug_; }
   void set_debug(bool debug) { debug_ = debug; }
+  
+  void GetPosition(NPVariant* position_variant);
 
   // Send debug messages to the background.html page within chrome.
   void SendConsole(const char* message);
@@ -32,6 +34,7 @@ class HapticsService {
  private:
   NPP npp_;
   NPObject* scriptable_object_;
+  NPObject* window_object_;
   NPNetscapeFuncs* npfuncs_;
   HapticsDevice* device_;
   bool debug_;
