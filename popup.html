@@ -3,6 +3,7 @@
 <script>
 var bkg = chrome.extension.getBackgroundPage();
 var haptics = bkg.plugin;
+
 function startDevice() {
   bkg.console.debug('Starting');
   haptics.startDevice();
@@ -12,9 +13,39 @@ function stopDevice() {
   bkg.console.debug('Stoping');
   haptics.stopDevice();
 }
+
+// There is something very weird.
+// When I set the number below decimal point as 0, there is no force on the device.
+// For example, it works with 10.1, 14.7, etc. except 10.0, 13.0.
+var force = new Array(0.0, 0.0, 10.1);
+
+function hapticLoop() {  
+  haptics.sendForce(force);
+}
+
+var interval;
+
+function runProgram() {
+  interval = setInterval("hapticLoop()", 1);
+  bkg.console.debug('Run Program');
+}
+function stopProgram() {
+  clearInterval(interval);
+
+  // Set the force to zero and then quit the program
+
+  force[0] = 0.0;
+  force[1] = 0.0;
+  force[2] = 0.0;
+  haptics.sendForce(force);
+
+  bkg.console.debug('Quit Program');
+}
 </script>
 <body> 
   <button onclick="startDevice()">Start Device</button>
   <button onclick="stopDevice()">Stop Device</button>
+  <button onclick="runProgram()">Run Program</button>
+  <button onclick="stopProgram()">Stop Program</button>
 </body>
 </html>
