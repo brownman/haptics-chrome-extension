@@ -2,14 +2,15 @@
 <html>
 <script>
 var bkg = chrome.extension.getBackgroundPage();
+var haptics = bkg.plugin;
 function startDevice() {
   bkg.console.debug('Starting');
-  bkg.plugin.startDevice();
+  haptics.startDevice();
 }
 
 function stopDevice() {
   bkg.console.debug('Stoping');
-  bkg.plugin.stopDevice();
+  haptics.stopDevice();
 }
 </script>
 <body> 
