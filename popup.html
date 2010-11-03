@@ -1,34 +1,61 @@
 <!DOCTYPE html> 
 <html>
+<link rel="stylesheet" type="text/css" href="/css/popup.css">
 <script>
+// The background page is needed since it hosts the plugin.
 var bkg = chrome.extension.getBackgroundPage();
+
+// Alias the plugin to haptics.
 var haptics = bkg.plugin;
-
-function startDevice() {
-  bkg.console.debug('Starting');
-  haptics.startDevice();
-}
-
-function stopDevice() {
-  bkg.console.debug('Stoping');
-  haptics.stopDevice();
-}
 
 // There is something very weird.
 // When I set the number below decimal point as 0, there is no force on the device.
 // For example, it works with 10.1, 14.7, etc. except 10.0, 13.0.
 var force = new Array(0.0, 0.0, 10.1);
 
-function hapticLoop() {  
+// Haptics timing interval, that manages the timings.
+var interval;
+
+/**
+ * Starts the haptics device.
+ */
+function startDevice() {
+  bkg.console.debug('Starting');
+  haptics.startDevice();
+}
+
+/**
+ * Stops the haptics device.
+ */
+function stopDevice() {
+  bkg.console.debug('Stoping');
+  haptics.stopDevice();
+}
+
+/**
+ * The haptic loop running at 1ms intervals. Try not to do many computations here
+ * or the loop will slow down.
+ */
+function hapticLoop() {
+  var position = haptics.position;
+  if (position[2] <= -0.03)
+    force[2] = 10.1;
+  else
+    force[2] = 0.0;
   haptics.sendForce(force);
 }
 
-var interval;
-
+/**
+ * Runs the haptic loop at 1ms intervals.
+ */
 function runProgram() {
   interval = setInterval("hapticLoop()", 1);
   bkg.console.debug('Run Program');
 }
+
+/**
+ * Clears the interval gracefull so it stops running.
+ */
 function stopProgram() {
   clearInterval(interval);
 
@@ -40,11 +67,19 @@ function stopProgram() {
 
   bkg.console.debug('Quit Program');
 }
+
 </script>
 <body> 
-  <button onclick="startDevice()">Start Device</button>
-  <button onclick="stopDevice()">Stop Device</button>
-  <button onclick="runProgram()">Run Program</button>
-  <button onclick="stopProgram()">Stop Program</button>
+  <h2>Haptics Controller</h2>
+  <fieldset id="process-group">
+    <legend>Process</legend>
+    <button onclick="runProgram()">Run</button>
+    <button onclick="stopProgram()">Stop</button>
+  </fieldset>
+  <fieldset id="device-group">
+    <legend>Device</legend>
+    <button onclick="startDevice()">Start</button>
+    <button onclick="stopDevice()">Stop</button>
+  </fieldset>
 </body>
 </html>

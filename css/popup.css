@@ -1,0 +1,36 @@
+body {
+  width: 250px;
+  font-size: 87%;
+  font-family: Arial, Helvetica, 'Helvetica Neue', Verdana, sans-serif;
+  margin: 10px;
+  background-color: #C0EEFF;
+}
+
+fieldset {
+  background-color: #58D6D5;
+  border: none;
+  -webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+  border-radius: 15px;
+}
+
+legend {
+  background-color: #9D4442;
+  text-align:left;
+  color:#ccc;
+  font-size:14px;
+  padding:5px;
+  border-radius: 15px;
+  color:#DF8939;
+}
+
+h2 {
+  font-size:20px;
+  color: #8AB846;
+  text-shadow: #6374AB 1px 1px 1px;
+  padding-left: 20px;
+  background: url('/img/icon16.png') left center no-repeat;
+}
+
+#process-group {
+  float: right;
+}
