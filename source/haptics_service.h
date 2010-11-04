@@ -14,7 +14,7 @@ namespace haptics {
 
 class HapticsService {
  public:
-  HapticsService(NPP npp, NPNetscapeFuncs* npfuncs);
+  HapticsService(NPP npp);
   ~HapticsService();
 
   NPObject* GetScriptableObject();
@@ -35,7 +35,6 @@ class HapticsService {
   NPP npp_;
   NPObject* scriptable_object_;
   NPObject* window_object_;
-  NPNetscapeFuncs* npfuncs_;
   HapticsDevice* device_;
   bool debug_;
 };

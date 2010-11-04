@@ -103,13 +103,13 @@ void HapticsDevice::SynchronizeClient() {
 }
 
 bool HapticsDevice::IsButtonDown() {
-    return button_;
+  return button_;
 }
 
 void HapticsDevice::GetPosition(double pos[3]) {
-    pos[0] = position_servo_[0];
-    pos[1] = position_servo_[1];
-    pos[2] = position_servo_[2];
+  pos[0] = position_servo_[0];
+  pos[1] = position_servo_[1];
+  pos[2] = position_servo_[2];
 }
 
 void HapticsDevice::FirePositionChange() const {

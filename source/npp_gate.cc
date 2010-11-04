@@ -32,7 +32,7 @@ NPError NPP_New(NPMIMEType mime_type,
   }
 
   HapticsService* haptics_service =
-      new(std::nothrow) HapticsService(instance, GetNetscapeFuncs());
+      new(std::nothrow) HapticsService(instance);
   if (haptics_service == NULL) {
     return NPERR_OUT_OF_MEMORY_ERROR;
   }

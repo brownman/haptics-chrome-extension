@@ -37,12 +37,12 @@ ScriptingBridge::~ScriptingBridge() {
 }
 
 // Sets up method_table and property_table.
-bool ScriptingBridge::InitializeIdentifiers(NPNetscapeFuncs* npfuncs) {
-  id_debug = npfuncs->getstringidentifier("debug");
-  id_position = npfuncs->getstringidentifier("position");
-  id_start_device = npfuncs->getstringidentifier("startDevice");
-  id_stop_device = npfuncs->getstringidentifier("stopDevice");
-  id_send_force = npfuncs->getstringidentifier("sendForce");
+bool ScriptingBridge::InitializeIdentifiers() {
+  id_debug = NPN_GetStringIdentifier("debug");
+  id_position = NPN_GetStringIdentifier("position");
+  id_start_device = NPN_GetStringIdentifier("startDevice");
+  id_stop_device = NPN_GetStringIdentifier("stopDevice");
+  id_send_force = NPN_GetStringIdentifier("sendForce");
 
   method_table =
       new(std::nothrow) std::map<NPIdentifier, MethodSelector>;
