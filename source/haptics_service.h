@@ -6,7 +6,7 @@
 #define HAPTICS_SERVICE_H_
 #pragma once
 
-#include <npfunctions.h>
+#include "npfunctions.h"
 
 #include "haptics_device.h"
 

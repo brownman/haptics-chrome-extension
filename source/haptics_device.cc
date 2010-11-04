@@ -4,7 +4,7 @@
 
 #include "haptics_device.h"
 
-#include <windows.h>
+#include "windows.h"
 
 #include <iostream>
 

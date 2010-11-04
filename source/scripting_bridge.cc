@@ -6,8 +6,6 @@
 
 #include "haptics_service.h"
 
-#include "npapi.h"
-#include "npruntime.h"
 namespace haptics {
 
 NPIdentifier ScriptingBridge::id_debug;

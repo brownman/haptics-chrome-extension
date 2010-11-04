@@ -4,7 +4,7 @@
 
 #include "string_utils.h"
 
-#include <windows.h>
+#include "windows.h"
 
 namespace string_utils {
 

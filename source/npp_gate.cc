@@ -5,14 +5,14 @@
 #include <stdio.h>
 #include <new>
 
-#include <npapi.h>
+#include "npapi.h"
 
 #include "haptics_service.h"
 
 using haptics::HapticsService;
 
 // This file implements functions that the plugin is expected to implement so
-// that the browser can all them.
+// that the browser can call them.
 
 
 // Called after NP_Initialize with a Plugin Instance Pointer and context

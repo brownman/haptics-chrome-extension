@@ -2,16 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can
 // be found in the LICENSE file.
 
-#include <npapi.h>
-#include <npfunctions.h>
+#include "npapi.h"
+#include "npfunctions.h"
 
-// NPAPI extensions.
-static NPNetscapeFuncs* npnfuncs = NULL;
-
-
-NPNetscapeFuncs* GetNetscapeFuncs() {
-  return npnfuncs;
-}
+extern NPNetscapeFuncs* npnfuncs;
 
 extern "C" {
 // When the browser calls NP_Initialize the plugin needs to return a list
