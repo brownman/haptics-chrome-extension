@@ -37,11 +37,48 @@ function stopDevice() {
  * or the loop will slow down.
  */
 function hapticLoop() {
+  virtualSphereRunner();
+}
+
+/**
+ * Virtual Wall example.
+ */
+function virtualWallRunner() {
   var position = haptics.position;
-  if (position[2] <= -0.03)
-    force[2] = 10.1;
+  var stiffness = 1000.0;
+  var wall_position_z = 0.0;
+  if (position[2] < wall_position_z)
+    force[2] = stiffness * (wall_position_z - position[2]);
   else
     force[2] = 0.0;
+  haptics.sendForce(force);
+}
+
+/**
+ * Virtual Sphere example.
+ */
+function virtualSphereRunner() {
+  var position = haptics.position;
+  var stiffness = 1000.0;
+  // Virtual Sphere
+  var radius = 0.03;
+  var distance = Math.sqrt(position[0]*position[0] + position[1]*position[1] +
+      position[2]*position[2]);
+
+  var vector = new Array;
+  vector[0] = position[0]/distance;
+  vector[1] = position[1]/distance;
+  vector[2] = position[2]/distance;
+
+  if( distance < radius ) {
+    force[0] = stiffness*(radius - distance)* vector[0];
+    force[1] = stiffness*(radius - distance)* vector[1];
+    force[2] = stiffness*(radius - distance)* vector[2];
+  } else {
+    force[0] = 0.0;
+    force[1] = 0.0;
+    force[2] = 0.0;
+  }
   haptics.sendForce(force);
 }
 
