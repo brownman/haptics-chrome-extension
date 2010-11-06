@@ -6,20 +6,23 @@ body {
   background-color: #C0EEFF;
 }
 
-fieldset {
+.command-group {
   background-color: #58D6D5;
   border: none;
   -webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.5);
   border-radius: 15px;
+  padding: 5px;
+  margin: 5px;
 }
 
-legend {
-  background-color: #9D4442;
+select {
+  background-color: #fff;
   text-align:left;
   color:#ccc;
   font-size:14px;
   padding:5px;
   border-radius: 15px;
+  width: 150px;
   color:#DF8939;
 }
 
@@ -29,8 +32,4 @@ h2 {
   text-shadow: #6374AB 1px 1px 1px;
   padding-left: 20px;
   background: url('/img/icon16.png') left center no-repeat;
-}
-
-#process-group {
-  float: right;
 }
