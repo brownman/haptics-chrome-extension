@@ -9,7 +9,7 @@ var force = [0.1, 0.1, 10.1];
 var stiffness = 1000.0;
 
 // Virtual Sphere.
-var radius = 0.03;
+var radius = 0.04;
 
 // Vector to calculate the new force.
 var vector = [0, 0, 0];
