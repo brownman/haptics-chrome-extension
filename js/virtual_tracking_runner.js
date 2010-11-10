@@ -40,37 +40,37 @@ var range2 = 0.02;
  */
 function update(position) {
   // The desired position is calculated on the circle by the incremental angle.
-  desired_position[0] = radius*Math.cos(incremental_angle*time);
-  desired_position[1] = radius*Math.sin(incremental_angle*time);
+  desired_position[0] = radius * Math.cos(incremental_angle * time);
+  desired_position[1] = radius * Math.sin(incremental_angle * time);
   desired_position[2] = 0;
 
   // Calculate the distance.
   var distance = Math.sqrt( 
-          (desired_position[0]-position[0])*(desired_position[0]-position[0]) + 
-          (desired_position[1]-position[1])*(desired_position[1]-position[1]) + 
-          (desired_position[2]-position[2])*(desired_position[2]-position[2]) );
+      (desired_position[0] - position[0]) * (desired_position[0] - position[0]) + 
+      (desired_position[1] - position[1]) * (desired_position[1] - position[1]) + 
+      (desired_position[2] - position[2]) * (desired_position[2] - position[2]));
 
   // Magnet-like force calculation by its magnitude based on the distance.
-  if( distance < range1) {
-    force_mag = Math.log(distance+1.0)/Math.log(log_base1);
-  } else if( distance < range2) {
-    force_mag = slope*distance + Math.log(range1+1.0)/Math.log(log_base1) - 
-                slope*range1;
+  if (distance < range1) {
+    force_mag = Math.log(distance + 1.0) / Math.log(log_base1);
+  } else if (distance < range2) {
+    force_mag = slope * distance + Math.log(range1 + 1.0) / Math.log(log_base1) - 
+        slope * range1;
   } else {
-    force_mag = slope*range2 + Math.log(range1+1.0)/Math.log(log_base1) - 
-                slope*range1;
+    force_mag = slope * range2 + Math.log(range1 + 1.0) / Math.log(log_base1) - 
+        slope * range1;
   }
 
   // Normal force direction from the desired position
   // toward the tracking position.
-  vector[0] = (desired_position[0]-position[0])/distance;
-  vector[1] = (desired_position[1]-position[1])/distance;
-  vector[2] = (desired_position[2]-position[2])/distance;
+  vector[0] = (desired_position[0] - position[0]) / distance;
+  vector[1] = (desired_position[1] - position[1]) / distance;
+  vector[2] = (desired_position[2] - position[2]) / distance;
 
   // Resultant force.
-  force[0] = stiffness*force_mag*vector[0];
-  force[1] = stiffness*force_mag*vector[1];
-  force[2] = stiffness*force_mag*vector[2];
+  force[0] = stiffness * force_mag * vector[0];
+  force[1] = stiffness * force_mag * vector[1];
+  force[2] = stiffness * force_mag * vector[2];
 
   // Increment time for next simulation tick
   time++;
