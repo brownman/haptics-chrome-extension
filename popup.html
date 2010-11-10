@@ -7,14 +7,13 @@
 // The background page is needed since it hosts the plugin.
 var bkg = chrome.extension.getBackgroundPage();
 var haptics = bkg.plugin;
-var factory = new RunnerFactory(bkg);
-
-// Register the available runners.
-factory.register({
+var renderer = null;
+var factory = null;
+var examples = {
   'Virtual Sphere'    : '/js/virtual_sphere_runner.js',
   'Virtual Wall'      : '/js/virtual_wall_runner.js',
   'Virtual Tracking'  : '/js/virtual_tracking_runner.js'
-});
+};
 
 /**
  * Haptics device Controller.
@@ -32,7 +31,7 @@ function controller(method) {
       factory.run(document.getElementById('runners').value);
       break;
     case 'stopProgram':
-      factory.stop(); 
+      factory.stop();
       break;
     default:
       bkg.console.error('Controller method not defined.');
@@ -55,6 +54,12 @@ function createRunnerOption(name) {
  * Initialize when window is shown.
  */
 function init() {
+  // We need to register the renderer canvas and factory right after dom loaded.
+  renderer = document.getElementById('renderer');
+  factory = new RunnerFactory(haptics, renderer);
+  factory.register(examples);
+  
+  // Fill up the available examples.
   var runner_array = factory.list();
   var runner_element = document.getElementById('runners');
   for (var i = 0; i < runner_array.length; i++) {
@@ -75,6 +80,10 @@ function init() {
     <br />
     <button onclick="controller('runProgram')">Run</button>
     <button onclick="controller('stopProgram')">Stop</button>
+  </div>
+  <div class="command-group" id="renderer-group">
+    <label>Renderer: </label>
+    <canvas id="renderer" width="250px" height="250px"></canvas>
   </div>
 </body>
 </html>

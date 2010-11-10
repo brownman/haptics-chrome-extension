@@ -1,5 +1,5 @@
 body {
-  width: 250px;
+  width: 275px;
   font-size: 87%;
   font-family: Arial, Helvetica, 'Helvetica Neue', Verdana, sans-serif;
   margin: 10px;
@@ -17,19 +17,25 @@ body {
 
 select {
   background-color: #fff;
-  text-align:left;
-  color:#ccc;
-  font-size:14px;
-  padding:5px;
+  text-align: left;
+  color: #ccc;
+  font-size: 14px;
+  padding: 5px;
   border-radius: 15px;
   width: 150px;
-  color:#DF8939;
+  color: #DF8939;
 }
 
 h2 {
-  font-size:20px;
+  font-size: 20px;
   color: #8AB846;
   text-shadow: #6374AB 1px 1px 1px;
   padding-left: 20px;
   background: url('/img/icon16.png') left center no-repeat;
+}
+
+canvas {
+  display: block;
+  background-color: #fff;
+  border: 1px solid #eee;
 }
