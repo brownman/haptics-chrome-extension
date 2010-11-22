@@ -65,12 +65,6 @@ void HapticsDevice::StartDevice() {
   double haptic_workspace[6];
   hdlDeviceWorkspace(haptic_workspace);
 
-  // Print dimensions.
-  for (int i = 0; i < 6; i++) {
-    std::cout << haptic_workspace[i] << " ";
-  }
-  std::cout << std::endl;
-
   // Establish the transformation from device space to app space
   // To keep things simple, we will define the app space units as
   // inches, and set the workspace to approximate the physical
@@ -112,13 +106,6 @@ void HapticsDevice::GetPosition(double pos[3]) {
   pos[2] = position_servo_[2];
 }
 
-void HapticsDevice::FirePositionChange() const {
-  std::cout << "Position: " << position_servo_[0] << " ";
-  std::cout << "Position: " << position_servo_[1] << " ";
-  std::cout << "Position: " << position_servo_[2] << " ";
-  std::cout << "Button: " << button_servo_ << std::endl;
-}
-
 void HapticsDevice::CheckError(const char* message) const {
   HDLError err = hdlGetError();
   if (err != HDL_NO_ERROR) {
@@ -131,9 +118,6 @@ HDLServoOpExitCode HapticsDevice::OnContact() {
   // Get current state of haptic device
   hdlToolPosition(position_servo_);
   hdlToolButton(&(button_servo_));
-
-  // Call JavaScript OnContact event listener. That does heavy calculations.
-  FirePositionChange();
 
   // Send forces to device
   hdlSetToolForce(force_servo_);

@@ -29,8 +29,6 @@ class HapticsDevice {
   // Get position of the device.
   void GetPosition(double pos[3]);
 private:
-  void FirePositionChange() const;
-
   void CheckError(const char* message) const;
   
   HAPTIC_CALLBACK(HapticsDevice, HDLServoOpExitCode, OnContact);
