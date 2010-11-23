@@ -11,7 +11,8 @@
 namespace haptics {
 
 HapticsDevice::HapticsDevice()
-    : button_servo_(false),
+    : initialized_(false),
+      button_servo_(false),
       device_handle_(HDL_INVALID_HANDLE),
       servo_callback_(HDL_INVALID_HANDLE) {
 }
@@ -77,6 +78,9 @@ void HapticsDevice::StartDevice() {
                                             game_workspace,
                                             true,
                                             transformation_matrix_);
+
+  // Device initialized!
+  initialized_ = true;
 }
 
 void HapticsDevice::StopDevice() {
@@ -90,6 +94,8 @@ void HapticsDevice::StopDevice() {
     hdlUninitDevice(device_handle_);
     device_handle_ = HDL_INVALID_HANDLE;
   }
+
+  initialized_ = false;
 }
 
 void HapticsDevice::SynchronizeClient() {

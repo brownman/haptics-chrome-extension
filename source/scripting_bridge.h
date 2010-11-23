@@ -64,6 +64,7 @@ class ScriptingBridge : public NPObject {
   // Accessor/mutator for the debug property.
   bool GetDebug(NPVariant* value);
   bool SetDebug(const NPVariant* value);
+  bool GetInitialized(NPVariant* value);
 
   // Position accessor.
   bool GetPosition(NPVariant* value);
@@ -73,6 +74,7 @@ class ScriptingBridge : public NPObject {
 
   static NPIdentifier id_debug;
   static NPIdentifier id_position;
+  static NPIdentifier id_initialized;
   static NPIdentifier id_start_device;
   static NPIdentifier id_stop_device;
   static NPIdentifier id_send_force;

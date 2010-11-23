@@ -10,6 +10,7 @@ namespace haptics {
 
 NPIdentifier ScriptingBridge::id_debug;
 NPIdentifier ScriptingBridge::id_position;
+NPIdentifier ScriptingBridge::id_initialized;
 NPIdentifier ScriptingBridge::id_start_device;
 NPIdentifier ScriptingBridge::id_stop_device;
 NPIdentifier ScriptingBridge::id_send_force;
@@ -40,6 +41,7 @@ ScriptingBridge::~ScriptingBridge() {
 bool ScriptingBridge::InitializeIdentifiers() {
   id_debug = NPN_GetStringIdentifier("debug");
   id_position = NPN_GetStringIdentifier("position");
+  id_initialized = NPN_GetStringIdentifier("initialized");
   id_start_device = NPN_GetStringIdentifier("startDevice");
   id_stop_device = NPN_GetStringIdentifier("stopDevice");
   id_send_force = NPN_GetStringIdentifier("sendForce");
@@ -80,6 +82,9 @@ bool ScriptingBridge::InitializeIdentifiers() {
   get_property_table->insert(
       std::pair<NPIdentifier, GetPropertySelector>(
           id_position, &ScriptingBridge::GetPosition));
+  get_property_table->insert(
+      std::pair<NPIdentifier, GetPropertySelector>(
+          id_initialized, &ScriptingBridge::GetInitialized));
 
   return true;
 }
@@ -89,7 +94,7 @@ bool ScriptingBridge::StartDevice(const NPVariant* args,
                                   NPVariant* result) {
   HapticsService* haptics_service = static_cast<HapticsService*>(npp_->pdata);
   if (haptics_service)
-    return haptics_service->StartDevice();
+    return haptics_service->StartDevice(result);
   return false;
 }
 
@@ -98,7 +103,7 @@ bool ScriptingBridge::StopDevice(const NPVariant* args,
                                  NPVariant* result) {
   HapticsService* haptics_service = static_cast<HapticsService*>(npp_->pdata);
   if (haptics_service)
-    return haptics_service->StopDevice();
+    return haptics_service->StopDevice(result);
   return false;
 }
 
@@ -146,6 +151,16 @@ bool ScriptingBridge::GetPosition(NPVariant* value) {
   HapticsService* haptics_service = static_cast<HapticsService*>(npp_->pdata);
   if (haptics_service) {
     haptics_service->GetPosition(value);
+    return true;
+  }
+  VOID_TO_NPVARIANT(*value);
+  return false;
+}
+
+bool ScriptingBridge::GetInitialized(NPVariant* value) {
+  HapticsService* haptics_service = static_cast<HapticsService*>(npp_->pdata);
+  if (haptics_service) {
+    haptics_service->GetInitialized(value);
     return true;
   }
   VOID_TO_NPVARIANT(*value);

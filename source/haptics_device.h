@@ -28,11 +28,17 @@ class HapticsDevice {
   
   // Get position of the device.
   void GetPosition(double pos[3]);
+
+  // Accessor to check if the device has been initialized.
+  bool initialized() const { return initialized_; }
 private:
   void CheckError(const char* message) const;
   
   HAPTIC_CALLBACK(HapticsDevice, HDLServoOpExitCode, OnContact);
   HAPTIC_CALLBACK(HapticsDevice, HDLServoOpExitCode, OnState);
+
+  // Checks if the device is initialized successfully.
+  bool initialized_;
 
   // Variables used only by servo thread
   double position_servo_[3];

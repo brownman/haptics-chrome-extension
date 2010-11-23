@@ -20,13 +20,14 @@ class HapticsService {
   NPObject* GetScriptableObject();
 
   bool SendForce(NPObject* force_object);
-  bool StartDevice();
-  bool StopDevice();
+  bool StartDevice(NPVariant* result_variant);
+  bool StopDevice(NPVariant* result_variant);
+  
+  void GetPosition(NPVariant* position_variant);
+  void GetInitialized(NPVariant* initialized_variant);
 
   bool debug() const { return debug_; }
   void set_debug(bool debug) { debug_ = debug; }
-  
-  void GetPosition(NPVariant* position_variant);
 
   // Send debug messages to the background.html page within chrome.
   void SendConsole(const char* message);

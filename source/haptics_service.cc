@@ -68,18 +68,19 @@ bool HapticsService::SendForce(NPObject* force_object) {
   return true;
 }
 
-bool HapticsService::StartDevice() {
+bool HapticsService::StartDevice(NPVariant* result_variant) {
   SendConsole("StartDevice::BEGIN");
   device_->StartDevice();
+  GetInitialized(result_variant);
   return true;
 }
 
-bool HapticsService::StopDevice() {
+bool HapticsService::StopDevice(NPVariant* result_variant) {
   SendConsole("StopDevice::BEGIN");
   device_->StopDevice();
+  GetInitialized(result_variant);
   return true;
 }
-
 
 void HapticsService::SendConsole(const char* message) {
   if (!debug_)
@@ -139,6 +140,10 @@ void HapticsService::GetPosition(NPVariant* position_variant) {
     NPN_SetProperty(npp_, object, NPN_GetIntIdentifier(2), &value);
     OBJECT_TO_NPVARIANT(object, *position_variant);
   }
+}
+
+void HapticsService::GetInitialized(NPVariant* initialized_variant) {
+  BOOLEAN_TO_NPVARIANT(device_->initialized(), *initialized_variant);
 }
 
 }  // namespace desktop_service
