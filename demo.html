@@ -1,0 +1,249 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		<title>three.js - materials</title>
+		<meta charset="utf-8">
+		<style type="text/css">
+			body {
+				font-family: Monospace;
+				background-color: #202020;
+				margin: 0px;
+				overflow: hidden;
+			}
+			canvas {
+        background-color: #fff;
+			}
+		</style>
+	</head>
+	<body>
+
+		<script type="text/javascript" src="/js/three.js/Three.js"></script>
+		<script type="text/javascript" src="/js/three.js/primitives/Sphere.js"></script>
+		<script type="text/javascript" src="/js/three.js/primitives/Plane.js"></script>
+		<script type="text/javascript" src="/js/three.js/primitives/Cube.js"></script>
+		<script type="text/javascript" src="/js/three.js/Stats.js"></script>
+
+		<script type="text/javascript">
+
+      var width = 500;
+      var height = 500;
+			var container, stats;
+			var camera, scene, renderer, projector, ray;
+			var sphere, pointer, cube;
+			var particleLight, pointLight, directionalLight;
+      
+			init();
+
+			function init() {
+
+				container = document.createElement('div');
+				document.body.appendChild(container);
+
+				camera = new THREE.Camera(90, width / height, 1, 2000);
+				scene = new THREE.Scene();
+        projector = new THREE.Projector();
+        ray = new THREE.Ray(camera.position, null);
+
+        diplayAxis();
+        diplayScene();
+        diplayLightning()
+        displayCanvas();
+        displayStats();
+        addMouseListeners();
+        setInterval(graphicsLoop, 1000/60);
+        setInterval(hapticsLoop, 1);
+			}
+
+      function addMouseListeners() {
+				document.addEventListener( 'mousewheel', onDocumentMouseScroll, false );
+				document.addEventListener( 'mousedown', onDocumentMouseDown, false );
+				document.addEventListener( 'mouseup', onDocumentMouseUp, false );
+				document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+      }
+      
+      function displayCanvas() {
+				renderer = new THREE.CanvasRenderer();
+				renderer.setSize(width, height);
+				container.appendChild( renderer.domElement );
+      }
+      
+      function displayStats() {
+				stats = new Stats();
+				stats.domElement.style.position = 'absolute';
+				stats.domElement.style.top = '0px';
+				container.appendChild(stats.domElement);
+      }
+      
+      function diplayLightning() {
+				scene.addLight( new THREE.AmbientLight( Math.random() * 0x202020 ) );
+
+				directionalLight = new THREE.DirectionalLight( Math.random() * 0xffffff );
+				directionalLight.position.x = Math.random() - 0.5;
+				directionalLight.position.y = Math.random() - 0.5;
+				directionalLight.position.z = Math.random() - 0.5;
+				directionalLight.position.normalize();
+				scene.addLight( directionalLight );
+				
+				pointLight = new THREE.PointLight( 0xffffff, 1 );
+				scene.addLight( pointLight );
+      }
+      
+      function diplayAxis() {
+				var geometry = new THREE.Geometry();
+				geometry.vertices.push( new THREE.Vertex( new THREE.Vector3( 0, 0, 0 ) ) );
+				geometry.vertices.push( new THREE.Vertex( new THREE.Vector3( 500, 0, 0 ) ) );
+
+        var line = new THREE.Line(geometry, new THREE.LineBasicMaterial({ color: 0x00ff00, opacity: 1}));
+        scene.addObject(line);
+        
+        var line = new THREE.Line(geometry, new THREE.LineBasicMaterial({ color: 0x00ff00, opacity: 1}));
+				line.rotation.z = Math.PI / 2;
+        scene.addObject(line);
+        
+        var line = new THREE.Line(geometry, new THREE.LineBasicMaterial({ color: 0x00ff00, opacity: 1}));
+				line.rotation.y = Math.PI * (3 / 2);
+        scene.addObject(line);
+        
+        var cube = new THREE.Mesh(new Cube(50, 50, 50), new THREE.MeshBasicMaterial( { color: 0xcccccc, wireframe:true } ));
+        scene.addObject(cube);
+      }
+      
+      function diplayScene() {
+        // Pointer
+        pointer = new THREE.Mesh(new Sphere(20), new THREE.MeshLambertMaterial({ color:  0xff0000 }));
+        scene.addObject(pointer);
+        
+        // Sphere
+        sphere = new THREE.Mesh(new Sphere(100), new THREE.MeshLambertMaterial({ color:  0x000000 }));
+        scene.addObject(sphere);
+        
+        // Cube
+        cube = new THREE.Mesh(new Cube(200,200,200), new THREE.MeshLambertMaterial({ color:  0x0000ff }));
+        cube.position.y = 250;
+        cube.scale.x = 2;
+        cube.scale.z = 0.25;
+        scene.addObject(cube);
+      }
+      
+      var camtheta = -0.2, camphi = 0.2;
+      var cam2theta = -0, cam2phi = -0;
+      var isDragging = false;
+			var startClientX, startClientY;
+			var tmpTheta, tmpPhi;
+      var phi = Math.PI / 6;
+      var theta = Math.PI / 4;
+      var mag = 1;
+			var zoom = 700;
+			
+			
+			function onDocumentMouseScroll(e){
+			  zoom -= e.wheelDelta / 2;
+			}
+			
+      function onDocumentMouseMove(e){
+			  if(isDragging){
+			    theta = tmpTheta + (e.clientX - startClientX) / 500;
+			    var ntp = tmpPhi + (e.clientY - startClientY) / 500;
+			    if(Math.cos(ntp) > 0) {
+			      phi = ntp;
+			    }
+			  }
+			}
+			
+			function onDocumentMouseDown(e){
+			  isDragging = true;
+			  
+			  if (e.button == 0) {
+			    mag = 1
+			  } else {
+			    mag = -1;
+			  }
+			  startClientX = e.clientX;
+			  startClientY = e.clientY;
+			  tmpTheta = theta;
+			  tmpPhi = phi;
+			}
+			
+			function onDocumentMouseUp(e){
+			  isDragging = false;
+			}
+			
+			function graphicsLoop() {
+				pointer.position.copy(position);
+        
+        camera.position.x = zoom * Math.cos(theta) * Math.cos(phi);
+        camera.position.z = zoom * Math.sin(theta) * Math.cos(phi);
+        camera.position.y = zoom * Math.sin(phi)
+ 
+				directionalLight.position.x = zoom * Math.cos(theta + camtheta)*Math.cos(phi + camphi);
+				directionalLight.position.z = zoom * Math.sin(theta + camtheta)*Math.cos(phi + camphi);
+				directionalLight.position.y = zoom * Math.sin(phi + camphi);
+				directionalLight.position.normalize();
+
+				renderer.render( scene, camera );
+				stats.update();
+			}
+
+			
+      var haptics = chrome.extension.getBackgroundPage().plugin;
+      var hapticPosition = [];
+      var position = new THREE.Vector3();
+      var scale = width / 0.05; // Assuming all directions
+      var force = [];
+      
+			function hapticsLoop() {
+        hapticPosition = haptics.position;
+        
+        position.set(hapticPosition[0] * scale,
+                     hapticPosition[1] * scale,
+                     hapticPosition[2] * scale);
+        
+         /*                  
+        var distance = position.distanceTo(sphere.position);
+        var vector = position.clone().divideScalar(distance);
+        var radius =  100 + 20;
+        var stiffness = 1000;
+        if (distance < radius) {
+          vector.multiplyScalar(stiffness * (radius - distance) / scale);
+          force[0] = vector.x;
+          force[1] = vector.y;
+          force[2] = vector.z;
+        } else {
+          force[0] = 0.0;
+          force[1] = 0.0;
+          force[2] = 0.0;
+        }
+        haptics.sendForce(force);
+        */   
+        
+				var intersects = insersectScene(pointer);
+	  		if (intersects.length > 0) {
+          console.log('Intersect Scene');
+	  		} 
+	  		
+			}
+			
+			function insersectScene(cursor) {
+        var i, l, object,
+        objects = scene.objects,
+        intersects = [];
+        for ( i = 0, l = objects.length; i < l; i++ ) {
+          object = objects[i];
+          if (object instanceof THREE.Mesh) {
+            intersectObject(cursor, object);
+          }
+        }
+        return intersects;
+			}
+			
+			function intersectObject(cursor, object) {
+        cursor.geometry.computeBoundingBox();
+        object.geometry.computeBoundingBox();
+        
+        //blah blah blah blah.
+        return null;
+			}
+		</script>
+
+	</body>
+</html>

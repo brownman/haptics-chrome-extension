@@ -34,6 +34,9 @@ function controller(method) {
     case 'stopProgram':
       factory.stop();
       break;
+    case 'runDemo':
+      bkg.openSingletonPage('demo.html');
+      break;
     default:
       bkg.console.error('Controller method not defined.');
   }
@@ -81,6 +84,7 @@ function init() {
     <br />
     <button onclick="controller('runProgram')">Run</button>
     <button onclick="controller('stopProgram')">Stop</button>
+    <button onclick="controller('runDemo')">Demo</button>
   </div>
   <div class="command-group" id="renderer-group">
     <label>Renderer: </label>
