@@ -252,6 +252,7 @@
         return intersects;
 			}
 			
+			/
 			function scenePos(object) {
         var min = new THREE.Vector3(object.geometry.bbox.x[0],
                                      object.geometry.bbox.y[0],
@@ -286,14 +287,7 @@
 			function intersectObject(position, object) {
         var scenePosition = scenePos(object);
         
-          if (object.geometry.name == 'PLANE') {
-            console.log(position.z, scenePosition[0].z, scenePosition[1].z);
-          }
-        if ((position.z > scenePosition[1].z) || (position.z < scenePosition[0].z)) {
-        }
-        else {
-        
-        }
+        // Check if the point collided to its bounding box.
         var bb = ((position.z > scenePosition[1].z) ||
                   (position.z < scenePosition[0].z) ||
                   (position.y > scenePosition[1].y) ||
