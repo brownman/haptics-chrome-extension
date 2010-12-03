@@ -1,12 +1,14 @@
 /**
  * @author mr.doob / http://mrdoob.com/
+ * @author Mohamed Mansour / http://mohamedmansour.com
+ *
  * based on http://papervision3d.googlecode.com/svn/trunk/as3/trunk/src/org/papervision3d/objects/primitives/Sphere.as
  */
 
 var Sphere = function ( radius, segments_width, segments_height ) {
-
 	THREE.Geometry.call( this );
-
+  this.radius = radius;
+  
 	var gridX = segments_width || 8,
 	gridY = segments_height || 6;
 
