@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html lang="en">
 	<head>
-		<title>three.js - materials</title>
+		<title>Haptics Chrome Online Demo</title>
 		<meta charset="utf-8">
 		<style type="text/css">
 			body {
@@ -21,14 +21,17 @@
 		<script type="text/javascript" src="/js/three.js/primitives/Sphere.js"></script>
 		<script type="text/javascript" src="/js/three.js/primitives/Plane.js"></script>
 		<script type="text/javascript" src="/js/three.js/primitives/Cube.js"></script>
+		<script type="text/javascript" src="/js/three.js/Collision.js"></script>
 		<script type="text/javascript" src="/js/three.js/Stats.js"></script>
 
 		<script type="text/javascript">
-
-      var width = 500;
-      var height = 500;
+      
+      width = 500;
+      height = 500;
+      haptics = chrome.extension.getBackgroundPage().plugin;
+      
 			var container, stats;
-			var camera, scene, renderer, projector, ray;
+			var camera, scene, renderer, projector;
 			var sphere, pointer, cube;
 			var particleLight, pointLight, directionalLight;
       
@@ -42,7 +45,6 @@
 				camera = new THREE.Camera(90, width / height, 1, 2000);
 				scene = new THREE.Scene();
         projector = new THREE.Projector();
-        ray = new THREE.Ray(camera.position, null);
 
         diplayAxis();
         diplayScene();
@@ -52,6 +54,8 @@
         addMouseListeners();
         setInterval(graphicsLoop, 1000/60);
         setInterval(hapticsLoop, 1);
+        
+        console.log(scenePos(sphere));
 			}
 
       function addMouseListeners() {
@@ -115,14 +119,28 @@
         
         // Sphere
         sphere = new THREE.Mesh(new Sphere(100), new THREE.MeshLambertMaterial({ color:  0x000000 }));
+        sphere.position.y = 100;
+        sphere.position.x = -100; 
+        sphere.position.z = 100;
         scene.addObject(sphere);
         
-        // Cube
-        cube = new THREE.Mesh(new Cube(200,200,200), new THREE.MeshLambertMaterial({ color:  0x0000ff }));
-        cube.position.y = 250;
-        cube.scale.x = 2;
-        cube.scale.z = 0.25;
-        scene.addObject(cube);
+        // Sphere
+        var s2 = new THREE.Mesh(new Sphere(100), new THREE.MeshLambertMaterial({ color:  Math.random() * 0xffffff }));
+        s2.position.y = 100;
+        s2.position.x = 100; 
+        s2.position.z = 100;
+        scene.addObject(s2);
+        
+        // Sphere
+        var s3 = new THREE.Mesh(new Sphere(100), new THREE.MeshLambertMaterial({ color:  Math.random() * 0xffffff }));
+        s3.position.y = 100;
+        s3.position.x = 100; 
+        s3.position.z = -100;
+        scene.addObject(s3);
+        
+        var plane = new THREE.Mesh(new Plane(500, 500), new THREE.MeshLambertMaterial({ color:  Math.random() * 0xffffff }));
+        plane.position.z = -100;
+        scene.addObject(plane);
       }
       
       var camtheta = -0.2, camphi = 0.2;
@@ -185,7 +203,6 @@
 			}
 
 			
-      var haptics = chrome.extension.getBackgroundPage().plugin;
       var hapticPosition = [];
       var position = new THREE.Vector3();
       var scale = width / 0.05; // Assuming all directions
@@ -194,17 +211,16 @@
 			function hapticsLoop() {
         hapticPosition = haptics.position;
         
-        position.set(hapticPosition[0] * scale,
-                     hapticPosition[1] * scale,
-                     hapticPosition[2] * scale);
-        
-         /*                  
+        position.set(hapticPosition[0] * scale, hapticPosition[1] * scale, hapticPosition[2] * scale);
+/*
         var distance = position.distanceTo(sphere.position);
         var vector = position.clone().divideScalar(distance);
-        var radius =  100 + 20;
+        var radius =  300;
         var stiffness = 1000;
+        
         if (distance < radius) {
           vector.multiplyScalar(stiffness * (radius - distance) / scale);
+          console.log(vector.toString());
           force[0] = vector.x;
           force[1] = vector.y;
           force[2] = vector.z;
@@ -213,35 +229,84 @@
           force[1] = 0.0;
           force[2] = 0.0;
         }
-        haptics.sendForce(force);
-        */   
         
-				var intersects = insersectScene(pointer);
-	  		if (intersects.length > 0) {
-          console.log('Intersect Scene');
-	  		} 
+        haptics.sendForce(force);
+   */     
+				var intersects = insersectScene(position);
+	  		//if (intersects.length > 0) {
+        //  console.log('Intersect Scene');
+	  		//} 
 	  		
 			}
 			
-			function insersectScene(cursor) {
+			function insersectScene(position) {
         var i, l, object,
         objects = scene.objects,
         intersects = [];
         for ( i = 0, l = objects.length; i < l; i++ ) {
           object = objects[i];
-          if (object instanceof THREE.Mesh) {
-            intersectObject(cursor, object);
+          if (object instanceof THREE.Mesh && object != pointer) {
+            intersectObject(position, object);
           }
         }
         return intersects;
 			}
 			
-			function intersectObject(cursor, object) {
-        cursor.geometry.computeBoundingBox();
-        object.geometry.computeBoundingBox();
+			function scenePos(object) {
+        var min = new THREE.Vector3(object.geometry.bbox.x[0],
+                                     object.geometry.bbox.y[0],
+                                     object.geometry.bbox.z[0]);
+        var max = new THREE.Vector3(object.geometry.bbox.x[1],
+                                     object.geometry.bbox.y[1],
+                                     object.geometry.bbox.z[1]);
+         min.addSelf(object.position);
+         max.addSelf(object.position);
+         return [min, max];
+			}
+			
+			/*
+			function intersectObject(objectA, objectB) {
+        var scenePositionA = scenePos(objectA);
+        var scenePositionB = scenePos(objectB);
+        var bb = ((scenePositionA[0].z >= scenePositionB[1].z) ||
+                  (scenePositionA[1].z <= scenePositionB[0].z) ||
+                  (scenePositionA[0].y >= scenePositionB[1].y) ||
+                  (scenePositionA[1].y <= scenePositionB[0].y) ||
+                  (scenePositionA[0].x >= scenePositionB[1].x) ||
+                  (scenePositionA[1].x <= scenePositionB[0].x)) ? false : true;
+        // Bounding box collided.
+        if (bb) {
+          Collision.collide(position, objectA, objectB);
+        }
         
-        //blah blah blah blah.
-        return null;
+        return false;
+			}
+			*/
+			
+			function intersectObject(position, object) {
+        var scenePosition = scenePos(object);
+        
+          if (object.geometry.name == 'PLANE') {
+            console.log(position.z, scenePosition[0].z, scenePosition[1].z);
+          }
+        if ((position.z > scenePosition[1].z) || (position.z < scenePosition[0].z)) {
+        }
+        else {
+        
+        }
+        var bb = ((position.z > scenePosition[1].z) ||
+                  (position.z < scenePosition[0].z) ||
+                  (position.y > scenePosition[1].y) ||
+                  (position.y < scenePosition[0].y) ||
+                  (position.x > scenePosition[1].x) ||
+                  (position.x < scenePosition[0].x)) ? false : true;
+                  
+        // Bounding box collided.
+        if (bb) {
+          Collision.collide(position, object);
+        }
+        
+        return false;
 			}
 		</script>
 
