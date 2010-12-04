@@ -27,12 +27,8 @@ The API:
     void startDevice();
     void stopDevice();
     void sendForce(double[3]);
-
- Future Implementation
-    
-    double[3] getPosition();
-    double[6] getWorkspaceDimensions();
-    addEventListener('servo', function(event));
+    double[3] position;
+    boolean initialized;
 
 
 How to debug?
@@ -41,6 +37,11 @@ You can debug the extension's Native (NPAPI) instance by setting a property
 for the plugin, it will spit out console messages to the background page:
  
     app.debug = true;
+
+Screenshots
+------------
+![Screenshot of the Chrome Extension](http://github.com/mohamedmansour/haptics-chrome-extension/raw/master/screenshot/screenshot_simple.png)
+![Screenshot of the Chrome Extension](http://github.com/mohamedmansour/haptics-chrome-extension/raw/master/screenshot/screenshot_multiple.png)
 
 
 License
