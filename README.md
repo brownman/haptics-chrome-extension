@@ -40,8 +40,8 @@ for the plugin, it will spit out console messages to the background page:
 
 Screenshots
 ------------
-![Screenshot of the Chrome Extension](http://github.com/mohamedmansour/haptics-chrome-extension/raw/master/screenshot/screenshot_simple.png)
-![Screenshot of the Chrome Extension](http://github.com/mohamedmansour/haptics-chrome-extension/raw/master/screenshot/screenshot_multiple.png)
+![Screenshot of the Chrome Extension](https://github.com/mohamedmansour/haptics-chrome-extension/raw/master/screenshot/screenshot_simple.png)
+![Screenshot of the Chrome Extension](https://github.com/mohamedmansour/haptics-chrome-extension/raw/master/screenshot/screenshot_multiple.png)
 
 
 License
